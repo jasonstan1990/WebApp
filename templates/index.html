@@ -3,63 +3,66 @@
 <head>
   <meta charset="UTF-8">
   <title>Flower Class Prediction</title>
+  <!-- Include Google Fonts for styling -->
   <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
   <link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
   <link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
   <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
   <style>
+    /* CSS Styles for the page */
     body {
       font-family: 'Arimo', sans-serif;
-      background-color: #f0f8ff;
+      background-color: #f0f8ff; /* Light blue background */
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      height: 100vh; /* Full viewport height */
       margin: 0;
     }
     .container {
-      background: #ffffff;
+      background: #ffffff; /* White background for the content */
       padding: 2em;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Shadow for container */
+      border-radius: 10px; /* Rounded corners */
       text-align: center;
-      max-width: 400px;
+      max-width: 400px; /* Maximum width of the container */
       width: 100%;
     }
     h1 {
-      font-family: 'Pacifico', cursive;
+      font-family: 'Pacifico', cursive; /* Font for title */
       font-size: 2.5em;
-      color: #333;
+      color: #333; /* Dark gray color */
       margin-bottom: 0.5em;
     }
     form {
       display: flex;
       flex-direction: column;
+      margin-top: 1em; /* Space above form */
     }
     input[type="text"] {
       padding: 0.5em;
       margin: 0.5em 0;
-      border: 1px solid #ddd;
+      border: 1px solid #ddd; /* Light gray border */
       border-radius: 5px;
       font-size: 1em;
     }
     .btn {
-      background-color: #5cb85c;
-      color: white;
+      background-color: #5cb85c; /* Green button background */
+      color: white; /* White button text */
       border: none;
       padding: 1em;
       font-size: 1em;
       border-radius: 5px;
       cursor: pointer;
-      transition: background-color 0.3s;
+      transition: background-color 0.3s; /* Smooth transition on hover */
     }
     .btn:hover {
-      background-color: #4cae4c;
+      background-color: #4cae4c; /* Darker green on hover */
     }
     .prediction {
-      margin-top: 1em;
+      margin-top: 1em; /* Space above prediction text */
       font-size: 1.2em;
-      color: #333;
+      color: #333; /* Dark gray prediction text */
     }
     .flower-image {
       max-width: 100%; /* Ensure image doesn't exceed container width */
@@ -68,23 +71,42 @@
       margin: 1em auto; /* Center the image */
       border-radius: 10px; /* Optional: Add rounded corners */
     }
+    .project-info {
+      text-align: left;
+      margin-bottom: 1em;
+      font-size: 0.9em; /* Smaller font size for project info */
+      color: #666; /* Light gray text color */
+    }
   </style>
 </head>
 <body>
   <div class="container">
+    <!-- Image of a flower -->
     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjX-7qA9EQrcw1dFED98n1ia-PerD_VITRt5E-prFvlcYmJvZ6Hb92Z6r2e2LMH1E_jSI&usqp=CAU" alt="Flower" class="flower-image">
 
+    <!-- Title of the page -->
     <h1>Flower Class Prediction</h1>
+    
+    <!-- Project information -->
+    <div class="project-info">
+      <p>This application predicts the species of an iris flower based on its measurements using a Random Forest Classifier.</p>
+    </div>
+    
+    <!-- Instructions for the user -->
     <p>Enter the measurements below to predict the flower species:</p>
+    <!-- Form for user input -->
     <form action="{{ url_for('predict') }}" method="post">
+      <!-- Input fields for measurements -->
       <input type="text" name="Sepal_Length" placeholder="Sepal Length (cm)" required="required" />
       <input type="text" name="Sepal_Width" placeholder="Sepal Width (cm)" required="required" />
       <input type="text" name="Petal_Length" placeholder="Petal Length (cm)" required="required" />
       <input type="text" name="Petal_Width" placeholder="Petal Width (cm)" required="required" />
-      <button type="submit" class="btn btn-primary btn-large">Predict</button>
+      <!-- Submit button for prediction -->
+      <button type="submit" class="btn">Predict</button>
     </form>
+    <!-- Display area for prediction result -->
     <div class="prediction">
-      {{ prediction_text }}
+      {{ prediction_text }} <!-- Placeholder for prediction result -->
     </div>
   </div>
 </body>
