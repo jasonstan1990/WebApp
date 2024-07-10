@@ -1,39 +1,31 @@
-import numpy as np
-from flask import Flask, request, jsonify, render_template
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
 import pickle
 
-# Create flask app
-flask_app = Flask(__name__)
-model = pickle.load(open("model.pkl", "rb"))
+# Load the csv file
+df = pd.read_csv("iris.csv")
 
-# Define species mapping
-species_mapping = {
-    0: "Setosa",
-    1: "Versicolor",
-    2: "Virginica"
-}
+print(df.head())
 
-@flask_app.route("/")
-def Home():
-    return render_template("index.html")
+# Select independent and dependent variable
+X = df[["Sepal_Length", "Sepal_Width", "Petal_Length", "Petal_Width"]]
+y = df["Class"]
 
-@flask_app.route("/predict", methods=["POST"])
-def predict():
-    # Retrieve measurements from the form
-    Sepal_Length = float(request.form['Sepal_Length'])
-    Sepal_Width = float(request.form['Sepal_Width'])
-    Petal_Length = float(request.form['Petal_Length'])
-    Petal_Width = float(request.form['Petal_Width'])
+# Split the dataset into train and test
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=50)
 
-    # Make prediction using the model
-    features = np.array([[Sepal_Length, Sepal_Width, Petal_Length, Petal_Width]])
-    prediction_index = model.predict(features)[0]  # Get the predicted index
-    predicted_species = species_mapping.get(prediction_index, "Unknown")
+# Feature scaling
+sc = StandardScaler()
+X_train = sc.fit_transform(X_train)
+X_test= sc.transform(X_test)
 
-    # Prepare prediction text to display in the HTML
-    prediction_text = f"The predicted species is {predicted_species}."
+# Instantiate the model
+classifier = RandomForestClassifier()
 
-    return render_template("index.html", prediction_text=prediction_text)
+# Fit the model
+classifier.fit(X_train, y_train)
 
-if __name__ == "__main__":
-    flask_app.run(debug=True)
+# Make pickle file of our model
+pickle.dump(classifier, open("model.pkl", "wb"))
