@@ -1,5 +1,4 @@
-pandas
-scikit-learn
-flask
-gunicorn
-pickle5
+pandas==2.2.2
+scikit-learn==1.5.1
+flask==3.0.3
+gunicorn==22.0.0
