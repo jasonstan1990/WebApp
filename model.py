@@ -1,39 +1,29 @@
-from flask import Flask, render_template, request
-import pickle
 import numpy as np
+from flask import Flask, request, jsonify, render_template
+import pickle
 
-app = Flask(__name__)
-
-# Load the trained model
+# Create flask app
+flask_app = Flask(__name__)
 model = pickle.load(open("model.pkl", "rb"))
 
-# Define a route to render the HTML page
-@app.route('/')
-def home():
-    return render_template('index.html')
+# Define species mapping
+species_mapping = {
+    0: "Setosa",
+    1: "Versicolor",
+    2: "Virginica"
+}
 
-# Define a route to handle prediction
-@app.route('/predict', methods=['POST'])
+@flask_app.route("/")
+def Home():
+    return render_template("index.html")
+
+@flask_app.route("/predict", methods=["POST"])
 def predict():
-    # Get the input values from the form
-    int_features = [float(x) for x in request.form.values()]
-    final_features = [np.array(int_features)]
+    float_features = [float(x) for x in request.form.values()]
+    features = [np.array(float_features)]
+    prediction_index = model.predict(features)[0]  # Get the predicted index
+    predicted_species = species_mapping.get(prediction_index, "Unknown")
+    return render_template("index.html", prediction_text=f"The flower species is {predicted_species}")
 
-    # Make prediction using the loaded model
-    prediction = model.predict(final_features)
-
-    # Map numerical prediction to class label
-    species = {
-        0: 'Setosa',
-        1: 'Versicolour',
-        2: 'Virginica'
-    }
-    
-    # Get the predicted species name
-    predicted_species = species[prediction[0]]
-
-    # Return the result to the HTML page
-    return render_template('index.html', prediction_text='Predicted class: {}'.format(predicted_species))
-
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    flask_app.run(debug=True)
