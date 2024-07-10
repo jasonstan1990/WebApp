@@ -1,31 +1,39 @@
-import pandas as pd
-from sklearn.preprocessing import StandardScaler
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import train_test_split
+from flask import Flask, render_template, request
 import pickle
+import numpy as np
 
-# Load the csv file
-df = pd.read_csv("iris.csv")
+app = Flask(__name__)
 
-print(df.head())
+# Load the trained model
+model = pickle.load(open("model.pkl", "rb"))
 
-# Select independent and dependent variable
-X = df[["Sepal_Length", "Sepal_Width", "Petal_Length", "Petal_Width"]]
-y = df["Class"]
+# Define a route to render the HTML page
+@app.route('/')
+def home():
+    return render_template('index.html')
 
-# Split the dataset into train and test
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=50)
+# Define a route to handle prediction
+@app.route('/predict', methods=['POST'])
+def predict():
+    # Get the input values from the form
+    int_features = [float(x) for x in request.form.values()]
+    final_features = [np.array(int_features)]
 
-# Feature scaling
-sc = StandardScaler()
-X_train = sc.fit_transform(X_train)
-X_test= sc.transform(X_test)
+    # Make prediction using the loaded model
+    prediction = model.predict(final_features)
 
-# Instantiate the model
-classifier = RandomForestClassifier()
+    # Map numerical prediction to class label
+    species = {
+        0: 'Setosa',
+        1: 'Versicolour',
+        2: 'Virginica'
+    }
+    
+    # Get the predicted species name
+    predicted_species = species[prediction[0]]
 
-# Fit the model
-classifier.fit(X_train, y_train)
+    # Return the result to the HTML page
+    return render_template('index.html', prediction_text='Predicted class: {}'.format(predicted_species))
 
-# Make pickle file of our model
-pickle.dump(classifier, open("model.pkl", "wb"))
+if __name__ == '__main__':
+    app.run(debug=True)
