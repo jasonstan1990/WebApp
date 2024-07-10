@@ -19,11 +19,21 @@ def Home():
 
 @flask_app.route("/predict", methods=["POST"])
 def predict():
-    float_features = [float(x) for x in request.form.values()]
-    features = [np.array(float_features)]
+    # Retrieve measurements from the form
+    Sepal_Length = float(request.form['Sepal_Length'])
+    Sepal_Width = float(request.form['Sepal_Width'])
+    Petal_Length = float(request.form['Petal_Length'])
+    Petal_Width = float(request.form['Petal_Width'])
+
+    # Make prediction using the model
+    features = np.array([[Sepal_Length, Sepal_Width, Petal_Length, Petal_Width]])
     prediction_index = model.predict(features)[0]  # Get the predicted index
     predicted_species = species_mapping.get(prediction_index, "Unknown")
-    return render_template("index.html", prediction_text=f"The flower species is {predicted_species}")
+
+    # Prepare prediction text to display in the HTML
+    prediction_text = f"The predicted species is {predicted_species}."
+
+    return render_template("index.html", prediction_text=prediction_text)
 
 if __name__ == "__main__":
     flask_app.run(debug=True)

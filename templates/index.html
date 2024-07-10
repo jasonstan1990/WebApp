@@ -106,7 +106,9 @@
     </form>
     <!-- Display area for prediction result -->
     <div class="prediction">
-      {{ prediction_text }} <!-- Placeholder for prediction result -->
+      {% if prediction_text %}
+        {{ prediction_text }} <!-- Placeholder for prediction result -->
+      {% endif %}
     </div>
   </div>
 </body>
